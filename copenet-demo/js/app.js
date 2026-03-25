@@ -191,10 +191,25 @@ window.COPENET_APP = (() => {
       return;
     }
 
+    const isRecarga = payload.type === 'recarga_telefono';
+    const title = isRecarga ? 'Confirmación de Recarga' : 'Confirmación de Pago Demo';
+
+    const summaryRows = isRecarga
+      ? `
+        <div class="meta-item"><span>Operadora</span><span>${payload.operadora}</span></div>
+        <div class="meta-item"><span>Número de teléfono</span><span>${payload.telefono}</span></div>
+        <div class="meta-item"><span>Monto</span><span>${utils.formatCurrencyGTQ(payload.monto)}</span></div>
+      `
+      : `
+        <div class="meta-item"><span>Módulo</span><span>${payload.modulo || 'Pago demo'}</span></div>
+        <div class="meta-item"><span>Detalle</span><span>${payload.detalle || 'Transacción de demostración'}</span></div>
+        <div class="meta-item"><span>Monto</span><span>${utils.formatCurrencyGTQ(payload.monto || 0)}</span></div>
+      `;
+
     appEl.innerHTML = `
       <section>
         <div class="pill-success">● Transacción lista para confirmar</div>
-        <h2 class="screen-title">Confirmación de Recarga</h2>
+        <h2 class="screen-title">${title}</h2>
         <p class="screen-subtitle">Código de referencia: <span class="ref-code">${code}</span></p>
 
         <article class="qr-card fade">
@@ -206,9 +221,7 @@ window.COPENET_APP = (() => {
         <article class="summary-card" style="margin-top: 12px">
           <h3 style="margin: 0 0 8px; font-size: 1rem">Resumen de transacción</h3>
           <div class="meta">
-            <div class="meta-item"><span>Operadora</span><span>${payload.operadora}</span></div>
-            <div class="meta-item"><span>Número de teléfono</span><span>${payload.telefono}</span></div>
-            <div class="meta-item"><span>Monto</span><span>${utils.formatCurrencyGTQ(payload.monto)}</span></div>
+            ${summaryRows}
           </div>
         </article>
 
@@ -290,6 +303,21 @@ window.COPENET_APP = (() => {
   }
 
   function bindGlobalEvents() {
+    function openDemoQR(modulo, detalle) {
+      const code = generateRandomCode(8);
+      const montoDemo = Number((Math.random() * 175 + 25).toFixed(2));
+      const payload = {
+        type: 'demo_pago',
+        modulo,
+        detalle,
+        monto: montoDemo,
+        codigo: code
+      };
+
+      router.setState({ transactionCode: code, qrPayload: payload });
+      router.navigateTo('confirmacion_qr');
+    }
+
     appEl.addEventListener('click', (event) => {
       const btn = event.target.closest('button');
       if (!btn) return;
@@ -319,19 +347,29 @@ window.COPENET_APP = (() => {
       if (serviceId === 'recarga_telefono') {
         router.navigateTo('formulario_recarga');
       } else if (serviceId) {
-        alert('Demo informativo: este módulo estará disponible próximamente.');
+        const selected = data.services.find((item) => item.id === serviceId);
+        openDemoQR('Pagos de Servicios', selected?.title || 'Servicio');
       }
 
-      if (btn.getAttribute('data-coop-id')) {
-        alert('Demo informativo: flujo de cooperativas en construcción.');
+      const coopId = btn.getAttribute('data-coop-id');
+      if (coopId) {
+        const selected = data.cooperatives.find((item) => item.id === coopId);
+        openDemoQR('Cooperativas', selected?.name || 'Cooperativa');
       }
 
-      if (btn.getAttribute('data-cripto-id')) {
-        alert('Demo informativo: flujo cripto en construcción.');
+      const criptoId = btn.getAttribute('data-cripto-id');
+      if (criptoId) {
+        const selected = data.cryptoOptions.find((item) => item.id === criptoId);
+        openDemoQR('Cripto', selected?.label || 'Operación cripto');
       }
 
-      if (btn.getAttribute('data-country-id')) {
-        alert('Demo informativo: selección de país registrada.');
+      const countryId = btn.getAttribute('data-country-id');
+      if (countryId) {
+        const selected = data.transferCountries.find((item) => item.id === countryId);
+        openDemoQR(
+          'Transferencias Internacionales',
+          `Envío de fondos a ${selected?.name || 'destino internacional'}`
+        );
       }
 
       const chipAmount = btn.getAttribute('data-monto');
