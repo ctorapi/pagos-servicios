@@ -58,7 +58,7 @@ body {
   top: 0;
   z-index: 9;
   display: flex;
-  gap: 12px;
+  justify-content: center;
   align-items: center;
   padding: 16px 16px 14px;
   border-bottom: 1px solid var(--border);
@@ -66,27 +66,10 @@ body {
   background: rgba(8, 12, 21, 0.92);
 }
 
-.brand-logo {
-  width: 40px;
-  height: 40px;
-  border-radius: 13px;
-  display: grid;
-  place-items: center;
-  background: linear-gradient(145deg, #266fff, #1d4bc9);
-  font-weight: 800;
-  letter-spacing: 0.3px;
-}
-
-.brand-copy h1 {
-  margin: 0;
-  font-size: 1.1rem;
-  line-height: 1.2;
-}
-
-.brand-copy p {
-  margin: 2px 0 0;
-  font-size: 0.74rem;
-  color: var(--muted);
+.brand-logo-image {
+  width: min(100%, 330px);
+  height: auto;
+  display: block;
 }
 
 .app-content {
