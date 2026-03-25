@@ -209,8 +209,11 @@ window.COPENET_APP = (() => {
     appEl.innerHTML = `
       <section>
         <div class="pill-success">● Transacción lista para confirmar</div>
-        <h2 class="screen-title">${title}</h2>
-        <p class="screen-subtitle">Código de referencia: <span class="ref-code">${code}</span></p>
+        <div class="confirm-hero">
+          <h2 class="screen-title confirm-title">${title}</h2>
+          <p class="screen-subtitle confirm-subtitle">Código de referencia</p>
+          <p class="confirm-code">${code}</p>
+        </div>
 
         <article class="qr-card fade">
           <div id="qrContainer" class="qr-box">

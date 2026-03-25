@@ -350,6 +350,28 @@ label {
   animation: fadeInUp 260ms ease;
 }
 
+.confirm-hero {
+  text-align: center;
+  margin-bottom: 12px;
+}
+
+.confirm-title {
+  text-align: center;
+}
+
+.confirm-subtitle {
+  margin-bottom: 6px;
+}
+
+.confirm-code {
+  margin: 0 0 12px;
+  font-size: 1.9rem;
+  font-weight: 800;
+  letter-spacing: 0.22rem;
+  color: #9ac2ff;
+  text-align: center;
+}
+
 @keyframes fadeInUp {
   from {
     opacity: 0;
